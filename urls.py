@@ -1,5 +1,5 @@
 # This file contains the urls for the API requests, and a boolean value to indicate if the request is a time series or not.
-ulrs = {
+urls = {
     "population": (
         "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000041,6200027788,5000000002,1002000001/es/0700/true/BISE/2.0/[Aquí va tu Token]?type=json",
         False,
