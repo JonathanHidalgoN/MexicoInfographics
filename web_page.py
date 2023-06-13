@@ -26,24 +26,20 @@ def get_token(path: str = "mex_api.txt") -> str:
     return token
 
 
-"""
-This function displays a counter of the population of Mexico.
-
-Parameters:
-        children_per_second (float): The number of children per second.
-        population (int): The initial population.
-
-Returns:
-        None
-"""
-
-
 async def population_counter(
     t: st._DeltaGenerator = st.empty(),
     children_per_second: float = 0.07,
     population: int = 126e6,
 ) -> None:
-    counter = st.empty()
+    # This function displays a counter of the population of Mexico.
+
+    # Parameters:
+    #        children_per_second (float): The number of children per second.
+    #        population (int): The initial population.
+
+    # Returns:
+    #        None
+
     current_population = population
     header_text = "Live population"
     digit_template = '<div style="display: inline-block; border: 4px solid black; padding: 5px; margin-right: 5px;">{}</div>'
@@ -54,7 +50,7 @@ async def population_counter(
 
         digits = [digit_template.format(digit) for digit in str(current_population)]
 
-        counter.markdown("".join(digits), unsafe_allow_html=True)
+        t.markdown("".join(digits), unsafe_allow_html=True)
 
         # time.sleep(children_per_second)
         r = await asyncio.sleep(children_per_second)
@@ -89,6 +85,13 @@ with col1:
     st.write("## Population")
 
 
+with col2:
+    t = st.empty()
+    asyncio.run(
+        population_counter(t=t, children_per_second=0.046, population=population)
+    )
+
+
 # Request the data for the population male/female
 """male_female_population_data, male_female_population_dates = client.get_observation("male_female_population")
 male_population = male_female_population_data[0]
@@ -102,12 +105,3 @@ fig, ax = plt.subplots()
 ax.scatter(male_female_population_dates, male_population)
 st.pyplot(fig)
 """
-
-with col2:
-    # Can't work with async functions in streamlit, but this hack works
-    # just run this at the end of the script and col will keep
-    # in the same place
-    text = st.empty()
-    asyncio.run(
-        population_counter(t=text, children_per_second=0.046, population=population)
-    )
