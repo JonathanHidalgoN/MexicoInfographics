@@ -22,3 +22,10 @@ def get_token(path : str = 'mex_api.txt') -> str:
     with open(path) as f:
         token = f.read()
     return token
+
+#TO DO: Check how to use the image for github
+map_image_path = 'mex_map.jpg'
+
+st.title('Mexico population infographic')
+st.write('This is a simple and interactive web app that shows the population of Mexico in the last years.')
+
