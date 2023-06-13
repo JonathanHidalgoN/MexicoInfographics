@@ -26,6 +26,38 @@ def get_token(path: str = "mex_api.txt") -> str:
     return token
 
 
+def population_counter(
+    children_per_second: float = 0.07, population: int = 126e6
+) -> None:
+    """
+    This function displays a counter of the population of Mexico.
+
+    Parameters:
+        children_per_second (float): The number of children per second.
+        population (int): The initial population.
+
+    Returns:
+        None
+    """
+
+    counter = st.empty()
+    current_population = population
+    header_text = "Live population"
+    digit_template = '<div style="display: inline-block; border: 4px solid black; padding: 5px; margin-right: 5px;">{}</div>'
+    st.write(header_text)
+
+    while True:
+        current_population += 1  # Adjust the increment as desired
+
+        digits = [digit_template.format(digit) for digit in str(current_population)]
+
+        counter.markdown("".join(digits), unsafe_allow_html=True)
+
+        time.sleep(
+            children_per_second
+        )  # Adjust the sleep duration to control the speed of the counter
+
+
 # TO DO: Check how to use the image for github
 map_image_path = "mex_map.jpg"
 
@@ -46,23 +78,10 @@ client = APIClient(token, urls)
 
 # Get the population data
 population = client.get_observation("population")[0][0]
+col1, col2 = st.columns(2)
 
-st.write("## Population")
+with col1:
+    st.write("## Population")
 
-def population_counter(target_population : int = population, sleep_time : float = 0.05, increment : int = 1000, start : int = 1e8):
-    counter = st.empty()
-    current_population = start
-    while current_population < target_population:
-        current_population += increment  # Adjust the increment as desired
-        counter.markdown(
-            f'<h1 style="font-size: 72px;">{current_population}</h1>',
-            unsafe_allow_html=True
-        )
-        time.sleep(sleep_time)  # Adjust the sleep duration to control the speed of the counter
-
-    counter.markdown(
-        f'<h1 style="font-size: 72px;">{target_population}</h1>',
-        unsafe_allow_html=True
-    )
-
-population_counter()
+with col2:
+    population_counter(children_per_second=0.07, population=population)
