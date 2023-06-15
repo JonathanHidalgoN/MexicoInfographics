@@ -124,71 +124,76 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
 
 
 # TO DO: Check how to use the image for github
-map_image_path = "mex_map.jpg"
 
-st.title("Mexico population infographic")
-st.write(
-    "Mexico (Spanish: México), officially the United Mexican States, is a country in the southern portion of North America. "
-    "It is bordered to the north by the United States; to the south and west by the Pacific Ocean; to the southeast by Guatemala"
-    ", Belize, and the Caribbean Sea; and to the east by the Gulf of Mexico."
-)
+if __name__ == "__main__":
 
-st.image(map_image_path, caption="Map of Mexico", use_column_width=True)
-st.write(
-    "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."
-)
+    web_variables = {
+        "map_image_path": "mex_map.jpg",
+        "token": get_token(),
+        "population_age_labels_1": [f"{i}-{i+4}" for i in range(0, 25, 5)],
+        "population_age_labels_2": [f"{i}-{i+4}" for i in range(25, 50, 5)],
+        "populatin_age_labels_3": [f"{i}-{i+4}" for i in range(50, 75, 5)],
+        "population_age_keys": [
+            "0-4/5-9/10-14/15-19/20-24/male_female_population",
+            "25-29/30-34/35-39/40-44/45-49/male_female_population",
+            "50-54/55-59/60-64/65-69/70-74/male_female_population",
+        ],
+    }
+    client = APIClient(web_variables["token"], urls)
+    population, _ = client.get_observation("population")
+    population = population["0"][0]
 
-# Instantiate the APIClient class
-token = get_token()
-client = APIClient(token, urls)
-
-# Get the population data
-population, _ = client.get_observation("population")
-# TO DO: Maybe this has to be handled in the APIClient class
-population = population["0"][0]
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("## Population")
-
-st.write(
-    "With a population of over 126 million, it is the 10th-most-populous country and has the most Spanish speakers."
-    " Mexico is organized as a federal republic comprising 31 states and Mexico City, its capital."
-)
-
-make_population_distribution_plot(client)
-
-population_age_keys = [
-    "0-4/5-9/10-14/15-19/20-24/male_female_population",
-    "25-29/30-34/35-39/40-44/45-49/male_female_population",
-    "50-54/55-59/60-64/65-69/70-74/male_female_population",
-]
-
-population_age_labels_1 = [f"{i}-{i+4}" for i in range(0, 25, 5)]
-population_age_labels_2 = [f"{i}-{i+4}" for i in range(25, 50, 5)]
-population_age_labels_3 = [f"{i}-{i+4}" for i in range(50, 75, 5)]
-
-population_age_1, date = unfold_population_per_age_request(
-    population_age_keys[0], client, population_age_labels_1
-)
-population_age_2, _ = unfold_population_per_age_request(
-    population_age_keys[1], client, population_age_labels_2
-)
-population_age_3, _ = unfold_population_per_age_request(
-    population_age_keys[2], client, population_age_labels_3
-)
-
-population_age = {**population_age_1, **population_age_2}
-population_age = {**population_age, **population_age_3}
-
-dataframe = pd.DataFrame(population_age, index=date)
-st.dataframe(dataframe)
-
-
-with col2:
-    # Async do not work with streamlit, put this in the end of the script,
-    # the col will keep in the same place
-    t = st.empty()
-    asyncio.run(
-        population_counter(t=t, children_per_second=0.046, population=population)
+    st.title("Mexico population infographic")
+    st.write(
+        "Mexico (Spanish: México), officially the United Mexican States, is a country in the southern portion of North America. "
+        "It is bordered to the north by the United States; to the south and west by the Pacific Ocean; to the southeast by Guatemala"
+        ", Belize, and the Caribbean Sea; and to the east by the Gulf of Mexico."
     )
+
+    st.image(
+        web_variables["map_image_path"], caption="Map of Mexico", use_column_width=True
+    )
+    st.write(
+        "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.write("## Population")
+
+    st.write(
+        "With a population of over 126 million, it is the 10th-most-populous country and has the most Spanish speakers."
+        " Mexico is organized as a federal republic comprising 31 states and Mexico City, its capital."
+    )
+
+    make_population_distribution_plot(client)
+
+    population_age_1, date = unfold_population_per_age_request(
+        web_variables["population_age_keys"][0],
+        client,
+        web_variables["population_age_labels_1"],
+    )
+    population_age_2, _ = unfold_population_per_age_request(
+        web_variables["population_age_keys"][1],
+        client,
+        web_variables["population_age_labels_2"],
+    )
+    population_age_3, _ = unfold_population_per_age_request(
+        web_variables["population_age_keys"][2],
+        client,
+        web_variables["population_age_labels_3"],
+    )
+
+    population_age = {**population_age_1, **population_age_2, **population_age_3}
+
+    dataframe = pd.DataFrame(population_age, index=date)
+    st.dataframe(dataframe)
+
+    with col2:
+        # Async do not work with streamlit, put this in the end of the script,
+        # the col will keep in the same place
+        t = st.empty()
+        asyncio.run(
+            population_counter(t=t, children_per_second=0.046, population=population)
+        )
