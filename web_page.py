@@ -6,9 +6,6 @@ import seaborn as sns
 import plotly as py
 import asyncio
 
-from urls import urls
-from APIClient import APIClient
-
 
 def get_token(path: str = "mex_api.txt") -> str:
 
@@ -122,6 +119,7 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
     all(dates[labels[0]] == dates[label] for label in labels)
     return d_population, dates[labels[0]]
 
+
 def create_age_data_frame() -> pd.DataFrame:
     """
     This function creates a dataframe with the population per age.
@@ -136,15 +134,15 @@ def create_age_data_frame() -> pd.DataFrame:
         web_variables["population_age_labels_1"],
     )
     population_age_2, _ = unfold_population_per_age_request(
-            web_variables["population_age_keys"][1],
-            client,
-            web_variables["population_age_labels_2"],
-        )
+        web_variables["population_age_keys"][1],
+        client,
+        web_variables["population_age_labels_2"],
+    )
     population_age_3, _ = unfold_population_per_age_request(
-            web_variables["population_age_keys"][2],
-            client,
-            web_variables["population_age_labels_3"],
-        )
+        web_variables["population_age_keys"][2],
+        client,
+        web_variables["population_age_labels_3"],
+    )
 
     population_age = {**population_age_1, **population_age_2, **population_age_3}
 
@@ -154,8 +152,11 @@ def create_age_data_frame() -> pd.DataFrame:
 
 if __name__ == "__main__":
 
-################################################################################
-#                                WEB VARIABLES                                 #
+    from urls import urls
+    from APIClient import APIClient
+
+    ################################################################################
+    #                                WEB VARIABLES                                 #
     web_variables = {
         "map_image_path": "mex_map.jpg",
         "token": get_token(),
@@ -168,17 +169,15 @@ if __name__ == "__main__":
             "50-54/55-59/60-64/65-69/70-74/male_female_population",
         ],
         "population_age_years": [year for year in range(1990, 2025, 5)],
-
     }
     client = APIClient(web_variables["token"], urls)
     population, _ = client.get_observation("population")
     population = population["0"][0]
     age_male_female_dataframe = create_age_data_frame()
 
-
-################################################################################
-################################################################################
-#                                WEB STRUCTURE                                 #
+    ################################################################################
+    ################################################################################
+    #                                WEB STRUCTURE                                 #
 
     st.title("Mexico population infographic")
     st.write(
@@ -213,19 +212,21 @@ if __name__ == "__main__":
             "Start year", web_variables["population_age_years"], index=0
         )
         end_year = st.selectbox(
-            "End year", web_variables["population_age_years"], index=web_variables["population_age_years"].index(2020)
+            "End year",
+            web_variables["population_age_years"],
+            index=web_variables["population_age_years"].index(2020),
         )
     with col4:
-        population_age_labels = web_variables["population_age_labels_1"] + web_variables["population_age_labels_2"] + web_variables["population_age_labels_3"]
-        st.write("### Age categories")
-        start_age = st.selectbox(
-            "Start age", population_age_labels, index=0
+        population_age_labels = (
+            web_variables["population_age_labels_1"]
+            + web_variables["population_age_labels_2"]
+            + web_variables["population_age_labels_3"]
         )
+        st.write("### Age categories")
+        start_age = st.selectbox("Start age", population_age_labels, index=0)
         end_age = st.selectbox(
             "End age", population_age_labels, index=population_age_labels.index("70-74")
         )
-
-
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
@@ -233,7 +234,6 @@ if __name__ == "__main__":
         t = st.empty()
         asyncio.run(
             population_counter(t=t, children_per_second=21, population=population)
-
         )
 
 ################################################################################
