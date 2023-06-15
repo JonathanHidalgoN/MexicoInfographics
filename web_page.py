@@ -56,6 +56,37 @@ async def population_counter(
         r = await asyncio.sleep(children_per_second)
 
 
+def make_population_distribution_plot(c_APIclient) -> None:
+    """
+    This function makes a plot of the population distribution in Mexico.
+    Parameters:
+        c_APIclient (APIClient): The APIClient object.
+    Returns:
+        None
+    
+    Raises:
+        assertion error if population data and dates are not the same length.
+    """
+    male_female_population_data, male_female_population_dates = c_APIclient.get_observation("male_female_population")
+    male_population = male_female_population_data[0]
+    female_population = male_female_population_data[1]
+    male_female_population_dates = male_female_population_dates[0]
+    assert(len(male_female_population_dates) == len(male_population) == len(female_population))
+    sns.set(style="darkgrid")
+    plt.rcParams['axes.facecolor'] = 'black'
+    fig, ax = plt.subplots(facecolor='black')
+    ax.scatter(male_female_population_dates, male_population, label='Male Population')
+    ax.scatter(male_female_population_dates, female_population, label='Female Population')
+    ax.set_xlabel("Date", color='white')
+    ax.set_ylabel("Population", color='white')
+    ax.set_title("Population Distribution", color='white')
+    legend = ax.legend(facecolor='black', edgecolor='white', fontsize='small', framealpha=1)
+    for text in legend.get_texts():
+        text.set_color('white')
+    ax.set_xticklabels(male_female_population_dates, rotation=45)
+    ax.tick_params(colors='white')
+    st.pyplot(fig)
+
 # TO DO: Check how to use the image for github
 map_image_path = "mex_map.jpg"
 
@@ -84,24 +115,32 @@ col1, col2 = st.columns(2)
 with col1:
     st.write("## Population")
 
+st.write('With a population of over 126 million, it is the 10th-most-populous country and has the most Spanish speakers.'\
+         ' Mexico is organized as a federal republic comprising 31 states and Mexico City, its capital.')
+
+make_population_distribution_plot(client)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 with col2:
+    #Async do not work with streamlit, put this in the end of the script,
+    #the col will keep in the same place
     t = st.empty()
     asyncio.run(
         population_counter(t=t, children_per_second=0.046, population=population)
     )
-
-
-# Request the data for the population male/female
-"""male_female_population_data, male_female_population_dates = client.get_observation("male_female_population")
-male_population = male_female_population_data[0]
-female_population = male_female_population_data[1]
-male_female_population_dates = male_female_population_dates[0]
-#Maybe this is not good here
-assert(len(male_female_population_dates) == len(male_population) == len(female_population))
-
-st.write("Scatter plot of male population")
-fig, ax = plt.subplots()
-ax.scatter(male_female_population_dates, male_population)
-st.pyplot(fig)
-"""
