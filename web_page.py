@@ -31,6 +31,7 @@ async def population_counter(
     # This function displays a counter of the population of Mexico.
 
     # Parameters:
+    #        t (st._DeltaGenerator): The DeltaGenerator object.
     #        children_per_second (float): The number of children per second.
     #        population (int): The initial population.
 
@@ -110,12 +111,12 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
     """
 
     d_population, dates = api_client.get_observation(key, labels)
-    n_sets = len(d_population)
     # Assert all dates and len of data are the same
     # is this necessary? or expensive?
     # I think it its because, this checks:
     # 1. All dates are the same
     # 2. All data has the same length
+    # So, I think it is necessary to avoid errors, but maybe it is expensive
     all(dates[labels[0]] == dates[label] for label in labels)
     return d_population, dates[labels[0]]
 
@@ -150,6 +151,27 @@ def create_age_data_frame() -> pd.DataFrame:
     return dataframe
 
 
+def cut_age_dataframe(
+    start_year: int,
+    end_year: int,
+    start_age: str,
+    end_age: str,
+    original_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    This function cuts the age dataframe to the specified years and age.
+    Parameters:
+        start_year (int): The start year.
+        end_year (int): The end year.
+        start_age (str): The start age.
+        end_age (str): The end age.
+        original_df (dataframe): The original dataframe.
+    Returns:
+        dataframe: The dataframe with the specified years and age.
+    """
+    return original_df.loc[str(start_year) : str(end_year)].loc[:, start_age:end_age]
+
+
 if __name__ == "__main__":
 
     from urls import urls
@@ -174,7 +196,11 @@ if __name__ == "__main__":
     population, _ = client.get_observation("population")
     population = population["0"][0]
     age_male_female_dataframe = create_age_data_frame()
-
+    population_age_labels = (
+        web_variables["population_age_labels_1"]
+        + web_variables["population_age_labels_2"]
+        + web_variables["population_age_labels_3"]
+    )
     ################################################################################
     ################################################################################
     #                                WEB STRUCTURE                                 #
@@ -217,16 +243,18 @@ if __name__ == "__main__":
             index=web_variables["population_age_years"].index(2020),
         )
     with col4:
-        population_age_labels = (
-            web_variables["population_age_labels_1"]
-            + web_variables["population_age_labels_2"]
-            + web_variables["population_age_labels_3"]
-        )
         st.write("### Age categories")
         start_age = st.selectbox("Start age", population_age_labels, index=0)
         end_age = st.selectbox(
             "End age", population_age_labels, index=population_age_labels.index("70-74")
         )
+
+    # TO DO : Add error handling for the case when the start year is greater than the end year
+    st.write("## Population per age")
+    selected_age_data_frame = cut_age_dataframe(
+        start_year, end_year, start_age, end_age, age_male_female_dataframe
+    )
+    st.dataframe(selected_age_data_frame)
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
