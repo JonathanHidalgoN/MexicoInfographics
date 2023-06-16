@@ -172,11 +172,29 @@ def cut_age_dataframe(
     return original_df.loc[str(start_year) : str(end_year)].loc[:, start_age:end_age]
 
 
+def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
+    """
+    This function plots the cut age dataframe.
+    Parameters:
+        cut_dataframe (dataframe): The cut dataframe.
+    Returns:
+        None
+    """
+    fig = py.express.line(cut_dataframe)
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="Population",
+        legend_title="Age",
+    )
+    st.plotly_chart(fig)
+
+
 if __name__ == "__main__":
 
     from urls import urls
     from APIClient import APIClient
 
+    pd.options.plotting.backend = "plotly"
     ################################################################################
     #                                WEB VARIABLES                                 #
     web_variables = {
@@ -255,6 +273,7 @@ if __name__ == "__main__":
         start_year, end_year, start_age, end_age, age_male_female_dataframe
     )
     st.dataframe(selected_age_data_frame)
+    plot_cut_age_dataframe(selected_age_data_frame)
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
