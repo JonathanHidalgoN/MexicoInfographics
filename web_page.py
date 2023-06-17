@@ -77,24 +77,33 @@ def make_population_distribution_plot(c_APIclient) -> None:
         == len(male_population)
         == len(female_population)
     )
-    sns.set(style="darkgrid")
-    plt.rcParams["axes.facecolor"] = "black"
-    fig, ax = plt.subplots(facecolor="black")
-    ax.scatter(male_female_population_dates, male_population, label="Male Population")
-    ax.scatter(
-        male_female_population_dates, female_population, label="Female Population"
+
+    population_df = pd.DataFrame(
+        {
+            "Date": male_female_population_dates,
+            "Male": male_population,
+            "Female": female_population,
+        }
     )
-    ax.set_xlabel("Date", color="white")
-    ax.set_ylabel("Population", color="white")
-    ax.set_title("Population Distribution", color="white")
-    legend = ax.legend(
-        facecolor="black", edgecolor="white", fontsize="small", framealpha=1
+
+    fig = py.express.scatter(
+        population_df,
+        x="Date",
+        y=["Male", "Female"],
+        labels={"value": "Population", "variable": "Gender"},
+        title="Population Distribution",
     )
-    for text in legend.get_texts():
-        text.set_color("white")
-    ax.set_xticklabels(male_female_population_dates, rotation=45)
-    ax.tick_params(colors="white")
-    st.pyplot(fig)
+
+    fig.update_layout(
+        plot_bgcolor="black",
+        paper_bgcolor="black",
+        font=dict(color="white"),
+        legend=dict(bgcolor="black", bordercolor="white", font=dict(color="white")),
+        xaxis=dict(tickfont=dict(color="white"), tickangle=45),
+        yaxis=dict(tickfont=dict(color="white")),
+    )
+
+    st.plotly_chart(fig)
 
 
 def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -> tuple:
