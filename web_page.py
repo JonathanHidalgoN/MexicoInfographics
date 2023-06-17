@@ -118,7 +118,6 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
     # 2. All data has the same length
     # So, I think it is necessary to avoid errors, but maybe it is expensive
     all(dates[labels[0]] == dates[label] for label in labels)
-    st.write(d_population)
     return d_population, dates[labels[0]]
 
 
@@ -169,7 +168,11 @@ def cut_age_dataframe(
     Returns:
         dataframe: The dataframe with the specified years and age.
     """
-    return original_df.loc[str(start_year) : str(end_year)].loc[:, start_age:end_age]
+    e_start_age = start_age + " male"
+    e_end_age = end_age + " female"
+    return original_df.loc[str(start_year) : str(end_year)].loc[
+        :, e_start_age:e_end_age
+    ]
 
 
 def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
@@ -188,7 +191,8 @@ def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
     )
     st.plotly_chart(fig)
 
-def create_population_age_labels_sex(start: int, stop: int, step : int) -> list[str]:
+
+def create_population_age_labels_sex(start: int, stop: int, step: int) -> list[str]:
     """
     This function creates the labels for the population per age request.
     Parameters:
@@ -200,8 +204,8 @@ def create_population_age_labels_sex(start: int, stop: int, step : int) -> list[
     """
     labels = []
     for i in range(start, stop, step):
-        labels.append(f"{i}-{i+4}_male")
-        labels.append(f"{i}-{i+4}_female")
+        labels.append(f"{i}-{i+4} male")
+        labels.append(f"{i}-{i+4} female")
     return labels
 
 
@@ -210,7 +214,6 @@ if __name__ == "__main__":
     from urls import urls
     from APIClient import APIClient
 
-    pd.options.plotting.backend = "plotly"
     ################################################################################
     #                                WEB VARIABLES                                 #
     web_variables = {
@@ -219,6 +222,7 @@ if __name__ == "__main__":
         "population_age_labels_1": create_population_age_labels_sex(0, 25, 5),
         "population_age_labels_2": create_population_age_labels_sex(25, 50, 5),
         "population_age_labels_3": create_population_age_labels_sex(50, 75, 5),
+        "population_age_range": [f"{i}-{i+4}" for i in range(0, 75, 5)],
         "population_age_keys": [
             "0-4/5-9/10-14/15-19/20-24/male_female_population",
             "25-29/30-34/35-39/40-44/45-49/male_female_population",
@@ -278,13 +282,21 @@ if __name__ == "__main__":
         )
     with col4:
         st.write("### Age categories")
-        start_age = st.selectbox("Start age", population_age_labels, index=0)
+        start_age = st.selectbox(
+            "Start age", web_variables["population_age_range"], index=0
+        )
         end_age = st.selectbox(
-            "End age", population_age_labels, index=population_age_labels.index("70-74")
+            "End age",
+            web_variables["population_age_range"],
+            index=web_variables["population_age_range"].index("70-74"),
         )
 
+    col5, col6 = st.columns(2)
+    with col5:
+        st.write("## Population per age")
+    with col6:
+        age_population_filter = st.selectbox("Filter", ["None", "Sex"], index=0)
     # TO DO : Add error handling for the case when the start year is greater than the end year
-    st.write("## Population per age")
     selected_age_data_frame = cut_age_dataframe(
         start_year, end_year, start_age, end_age, age_male_female_dataframe
     )
