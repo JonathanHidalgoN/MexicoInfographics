@@ -118,6 +118,7 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
     # 2. All data has the same length
     # So, I think it is necessary to avoid errors, but maybe it is expensive
     all(dates[labels[0]] == dates[label] for label in labels)
+    st.write(d_population)
     return d_population, dates[labels[0]]
 
 
@@ -146,7 +147,6 @@ def create_age_data_frame() -> pd.DataFrame:
     )
 
     population_age = {**population_age_1, **population_age_2, **population_age_3}
-
     dataframe = pd.DataFrame(population_age, index=date)
     return dataframe
 
@@ -188,6 +188,22 @@ def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
     )
     st.plotly_chart(fig)
 
+def create_population_age_labels_sex(start: int, stop: int, step : int) -> list[str]:
+    """
+    This function creates the labels for the population per age request.
+    Parameters:
+        start (int): The start age.
+        stop (int): The stop age.
+        step (int): The step age.
+    Returns:
+        list[str]: The labels for the population per age request.
+    """
+    labels = []
+    for i in range(start, stop, step):
+        labels.append(f"{i}-{i+4}_male")
+        labels.append(f"{i}-{i+4}_female")
+    return labels
+
 
 if __name__ == "__main__":
 
@@ -200,9 +216,9 @@ if __name__ == "__main__":
     web_variables = {
         "map_image_path": "mex_map.jpg",
         "token": get_token(),
-        "population_age_labels_1": [f"{i}-{i+4}" for i in range(0, 25, 5)],
-        "population_age_labels_2": [f"{i}-{i+4}" for i in range(25, 50, 5)],
-        "population_age_labels_3": [f"{i}-{i+4}" for i in range(50, 75, 5)],
+        "population_age_labels_1": create_population_age_labels_sex(0, 25, 5),
+        "population_age_labels_2": create_population_age_labels_sex(25, 50, 5),
+        "population_age_labels_3": create_population_age_labels_sex(50, 75, 5),
         "population_age_keys": [
             "0-4/5-9/10-14/15-19/20-24/male_female_population",
             "25-29/30-34/35-39/40-44/45-49/male_female_population",
