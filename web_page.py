@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly as py
+import plotly.express as px
 import asyncio
 
 
@@ -86,7 +86,7 @@ def make_population_distribution_plot(c_APIclient) -> None:
         }
     )
 
-    fig = py.express.scatter(
+    fig = px.scatter(
         population_df,
         x="Date",
         y=["Male", "Female"],
@@ -159,12 +159,38 @@ def create_age_data_frame() -> pd.DataFrame:
     return dataframe
 
 
+def add_age_data_frame(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    This funcition merge age columns in the dataframe.
+    Parameters:
+        dataframe (dataframe): The dataframe to merge.
+    Returns:
+        dataframe: The dataframe with the merged columns.
+    """
+    #TODO: This function may be slow, try to optimize it
+    col_names = dataframe.columns
+    new_col_names = []
+    for idx, col_name in enumerate(col_names):
+        if idx % 2 == 0:
+            tmp = col_name.split(" ")
+            new_col_names.append(tmp[0] + " years")
+        for idx, col_name in enumerate(col_names):
+            if idx % 2 != 0:
+                dataframe[new_col_names[idx // 2]] = (
+                    dataframe[col_name] + dataframe[col_names[idx - 1]]
+                )
+        for idx, col_name in enumerate(col_names):
+            dataframe.drop(col_name, axis=1, inplace=True)
+        return dataframe
+
+
 def cut_age_dataframe(
     start_year: int,
     end_year: int,
     start_age: str,
     end_age: str,
     original_df: pd.DataFrame,
+    filter: str,
 ) -> pd.DataFrame:
     """
     This function cuts the age dataframe to the specified years and age.
@@ -174,14 +200,19 @@ def cut_age_dataframe(
         start_age (str): The start age.
         end_age (str): The end age.
         original_df (dataframe): The original dataframe.
+        fitler (str): The filter to apply to the dataframe.
     Returns:
         dataframe: The dataframe with the specified years and age.
     """
     e_start_age = start_age + " male"
     e_end_age = end_age + " female"
-    return original_df.loc[str(start_year) : str(end_year)].loc[
+    selected_data_frame = original_df.loc[str(start_year) : str(end_year)].loc[
         :, e_start_age:e_end_age
     ]
+    if filter == "Sex":
+        return selected_data_frame
+    else:
+        return add_age_data_frame(selected_data_frame)
 
 
 def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
@@ -192,7 +223,7 @@ def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
     Returns:
         None
     """
-    fig = py.express.line(cut_dataframe)
+    fig = px.line(cut_dataframe)
     fig.update_layout(
         xaxis_title="Year",
         yaxis_title="Population",
@@ -306,12 +337,28 @@ if __name__ == "__main__":
     with col6:
         age_population_filter = st.selectbox("Filter", ["None", "Sex"], index=0)
     # TO DO : Add error handling for the case when the start year is greater than the end year
-    selected_age_data_frame = cut_age_dataframe(
-        start_year, end_year, start_age, end_age, age_male_female_dataframe
-    )
-    st.dataframe(selected_age_data_frame)
-    plot_cut_age_dataframe(selected_age_data_frame)
-
+    if age_population_filter == "Sex":
+        selected_age_data_frame = cut_age_dataframe(
+            start_year,
+            end_year,
+            start_age,
+            end_age,
+            age_male_female_dataframe,
+            filter=age_population_filter,
+        )
+        st.dataframe(selected_age_data_frame)
+        plot_cut_age_dataframe(selected_age_data_frame)
+    else:
+        selected_age_data_frame = cut_age_dataframe(
+            start_year,
+            end_year,
+            start_age,
+            end_age,
+            age_male_female_dataframe,
+            filter=age_population_filter,
+        )
+        st.dataframe(selected_age_data_frame)
+        plot_cut_age_dataframe(selected_age_data_frame)
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
         # the col will keep in the same place
