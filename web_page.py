@@ -167,8 +167,8 @@ def add_age_data_frame(dataframe: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe: The dataframe with the merged columns.
     """
-    #TODO: This function may be slow, try to optimize it
-    col_names = dataframe.columns
+    age_dataframe = dataframe.copy()
+    col_names = age_dataframe.columns
     new_col_names = []
     for idx, col_name in enumerate(col_names):
         if idx % 2 == 0:
@@ -176,12 +176,12 @@ def add_age_data_frame(dataframe: pd.DataFrame) -> pd.DataFrame:
             new_col_names.append(tmp[0] + " years")
         for idx, col_name in enumerate(col_names):
             if idx % 2 != 0:
-                dataframe[new_col_names[idx // 2]] = (
-                    dataframe[col_name] + dataframe[col_names[idx - 1]]
+                age_dataframe[new_col_names[idx // 2]] = (
+                    age_dataframe[col_name] + age_dataframe[col_names[idx - 1]]
                 )
         for idx, col_name in enumerate(col_names):
-            dataframe.drop(col_name, axis=1, inplace=True)
-        return dataframe
+            age_dataframe.drop(col_name, axis=1, inplace=True)
+        return age_dataframe
 
 
 def cut_age_dataframe(
@@ -212,7 +212,37 @@ def cut_age_dataframe(
     if filter == "Sex":
         return selected_data_frame
     else:
+        # Working on summing the columns
         return add_age_data_frame(selected_data_frame)
+
+
+def add_age_data_frame(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """
+    This function merges age columns in the dataframe.
+    Parameters:
+        dataframe (pd.DataFrame): The dataframe to merge.
+    Returns:
+        pd.DataFrame: The dataframe with the merged columns.
+    """
+    age_dataframe = dataframe.copy()
+    col_names = age_dataframe.columns
+    new_col_names = []
+
+    for idx, col_name in enumerate(col_names):
+        if idx % 2 == 0:
+            tmp = col_name.split(" ")
+            new_col_names.append(tmp[0] + " years")
+
+    for idx, col_name in enumerate(col_names):
+        if idx % 2 != 0:
+            age_dataframe[new_col_names[idx // 2]] = (
+                age_dataframe[col_name] + age_dataframe[col_names[idx - 1]]
+            )
+
+    for col_name in col_names:
+        age_dataframe.drop(col_name, axis=1, inplace=True)
+
+    return age_dataframe
 
 
 def plot_cut_age_dataframe(cut_dataframe: pd.DataFrame) -> None:
