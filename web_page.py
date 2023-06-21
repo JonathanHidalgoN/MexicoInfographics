@@ -18,8 +18,11 @@ def get_token(path: str = "mex_api.txt") -> str:
     Returns:
         str: The token.
     """
-    with open(path) as f:
-        token = f.read()
+    try:
+        with open(path) as f:
+            token = f.read()
+    except FileNotFoundError:
+        token = st.secrets["mex_api_token"]
     return token
 
 
