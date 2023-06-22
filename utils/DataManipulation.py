@@ -1,5 +1,6 @@
 import streamlit as st
-from pandas import DataFrame 
+from pandas import DataFrame
+
 
 def get_token(path: str = "mex_api.txt") -> str:
 
@@ -43,7 +44,8 @@ def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -
     all(dates[labels[0]] == dates[label] for label in labels)
     return d_population, dates[labels[0]]
 
-def create_age_data_frame(web_variables : dict, client : any) -> DataFrame:
+
+def create_age_data_frame(web_variables: dict, client: any) -> DataFrame:
     """
     This function creates a dataframe with the population per age.
     Parameters:
@@ -72,6 +74,7 @@ def create_age_data_frame(web_variables : dict, client : any) -> DataFrame:
     dataframe = DataFrame(population_age, index=date)
     return dataframe
 
+
 def add_age_data_frame(dataframe: DataFrame) -> DataFrame:
     """
     This funcition merge age columns in the dataframe.
@@ -83,19 +86,21 @@ def add_age_data_frame(dataframe: DataFrame) -> DataFrame:
     age_dataframe = dataframe.copy()
     col_names = age_dataframe.columns
     new_col_names = []
-    
+
     for idx, col_name in enumerate(col_names):
         if idx % 2 == 0:
             tmp = col_name.split(" ")
             new_col_names.append(tmp[0] + " years")
-    
+
     for idx, col_name in enumerate(col_names):
         if idx % 2 != 0:
-            age_dataframe[new_col_names[idx // 2]] = age_dataframe[col_name] + age_dataframe[col_names[idx - 1]]
-    
+            age_dataframe[new_col_names[idx // 2]] = (
+                age_dataframe[col_name] + age_dataframe[col_names[idx - 1]]
+            )
+
     for col_name in col_names:
         age_dataframe.drop(col_name, axis=1, inplace=True)
-    
+
     return age_dataframe
 
 
@@ -146,5 +151,3 @@ def create_population_age_labels_sex(start: int, stop: int, step: int) -> list[s
         labels.append(f"{i}-{i+4} male")
         labels.append(f"{i}-{i+4} female")
     return labels
-
-

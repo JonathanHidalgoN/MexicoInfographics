@@ -1,7 +1,7 @@
 if __name__ == "__main__":
 
     import streamlit as st
-    
+
     from asyncio import run as asyncio_run
     from urls import urls
     from APIClient import APIClient
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     from utils.Visualizations import (
         plot_cut_age_dataframe,
         make_population_distribution_plot,
-        population_counter
+        population_counter,
     )
 
     from utils.DataManipulation import (
@@ -38,10 +38,7 @@ if __name__ == "__main__":
     client = APIClient(web_variables["token"], urls)
     population, _ = client.get_observation("population")
     population = population["0"][0]
-    age_male_female_dataframe = create_age_data_frame(
-        web_variables,
-        client
-    )
+    age_male_female_dataframe = create_age_data_frame(web_variables, client)
     population_age_labels = (
         web_variables["population_age_labels_1"]
         + web_variables["population_age_labels_2"]

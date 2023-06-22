@@ -5,6 +5,7 @@ import plotly.express as px
 from asyncio import sleep
 from pandas import DataFrame
 
+
 async def population_counter(
     t: st._DeltaGenerator = st.empty(),
     children_per_second: float = 0.07,
@@ -34,6 +35,7 @@ async def population_counter(
 
         # time.sleep(children_per_second)
         r = await sleep(children_per_second)
+
 
 def make_population_distribution_plot(c_APIclient) -> None:
     """
@@ -86,6 +88,7 @@ def make_population_distribution_plot(c_APIclient) -> None:
 
     st.plotly_chart(fig)
 
+
 def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
     """
     This function plots the cut age dataframe.
@@ -101,4 +104,3 @@ def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
         legend_title="Age",
     )
     st.plotly_chart(fig)
-
