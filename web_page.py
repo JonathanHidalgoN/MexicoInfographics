@@ -290,7 +290,7 @@ if __name__ == "__main__":
     ################################################################################
     #                                WEB VARIABLES                                 #
     web_variables = {
-        "map_image_path": "mex_map.jpg",
+        "map_image_path": "images/mex_map.jpg",
         "token": get_token(),
         "population_age_labels_1": create_population_age_labels_sex(0, 25, 5),
         "population_age_labels_2": create_population_age_labels_sex(25, 50, 5),
