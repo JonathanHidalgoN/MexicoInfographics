@@ -144,10 +144,32 @@ def create_population_age_labels_sex(start: int, stop: int, step: int) -> list[s
         stop (int): The stop age.
         step (int): The step age.
     Returns:
-        list[str]: The labels for the population per age request.
+        list[str]: The labels for sthe population per age request.
     """
     labels = []
     for i in range(start, stop, step):
         labels.append(f"{i}-{i+4} male")
         labels.append(f"{i}-{i+4} female")
     return labels
+
+def create_salary_df(salary_by_range: dict, dates: dict) -> DataFrame :
+    """
+    This function creates a dataframe with the salary by range.
+    Parameters:
+        salary_by_range (dict): The salary by range.
+        dates (dict): The dates.
+    Returns:
+        dataframe: The dataframe with the salary by range.
+    """
+    assert len(salary_by_range) == len(dates), "The length of the salary by range and dates are not the same"
+    col_names = dates['0']
+    index_names = [
+        "Not working", "Less or 1 MW", "1 to 2 MW", "2 to 3 MW", 
+        "3 to 5 MW", "More than 5 MW", "No income", "No answer"
+        ""
+    ]
+    salary_df = DataFrame(salary_by_range,
+                          index=col_names)
+    salary_df.index.name = "Date"
+    salary_df.columns = index_names
+    return salary_df

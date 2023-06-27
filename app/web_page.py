@@ -17,6 +17,7 @@ if __name__ == "__main__":
         create_age_data_frame,
         cut_age_dataframe,
         create_population_age_labels_sex,
+        create_salary_df
     )
 
     ################################################################################
@@ -44,6 +45,8 @@ if __name__ == "__main__":
         + web_variables["population_age_labels_2"]
         + web_variables["population_age_labels_3"]
     )
+    salary_by_range, salary_dates = client.get_observation("inac/1/2-3/3-5/5+/no/unk/salary_population")
+    salary_df = create_salary_df(salary_by_range, salary_dates)
     ################################################################################
     ################################################################################
     #                                WEB STRUCTURE                                 #
@@ -124,6 +127,9 @@ if __name__ == "__main__":
         )
         st.dataframe(selected_age_data_frame)
         plot_cut_age_dataframe(selected_age_data_frame)
+
+    st.dataframe(salary_df)
+
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
         # the col will keep in the same place
