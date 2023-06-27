@@ -12,6 +12,7 @@ st.write(
 try :
     st.image(image_path, caption="Map of Mexico", use_column_width=True)
 except :
+    st.write(st.secrets["map_url"])
     st.image(
         st.secrets["map_url"],
         caption="Map of Mexico",
