@@ -1,4 +1,6 @@
 import streamlit as st
+from PIL import Image
+
 
 st.sidebar.success("Select a category.")
 image_path = "images/mex_map.jpg"
@@ -13,8 +15,9 @@ try :
     st.image(image_path, caption="Map of Mexico", use_column_width=True)
 except :
     st.write(st.secrets["map_url"])
+    map_image = Image.open(st.secrets["map_url"])
     st.image(
-        st.secrets["map_url"],
+        map_image,
         caption="Map of Mexico",
         use_column_width=True,
     )
