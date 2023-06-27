@@ -1,13 +1,7 @@
 import streamlit as st
-import PIL.Image as Image
-
 
 st.sidebar.success("Select a category.")
 image_path = "images/mex_map.jpg"
-
-st.title("Mexico")
-
-image = Image.open(image_path)
 
 st.write(
     "Mexico (Spanish: México), officially the United Mexican States, is a country in the southern portion of North America. "
@@ -15,7 +9,7 @@ st.write(
     ", Belize, and the Caribbean Sea; and to the east by the Gulf of Mexico."
 )
 
-st.image(image, caption="Map of Mexico", use_column_width=True)
+st.image(image_path, caption="Map of Mexico", use_column_width=True)
 st.write(
     "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."
 )
