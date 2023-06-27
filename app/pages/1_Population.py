@@ -3,8 +3,8 @@ if __name__ == "__main__":
     import streamlit as st
 
     from asyncio import run as asyncio_run
-    from urls import urls
-    from APIClient import APIClient
+    from utils.urls import urls
+    from utils.APIClient import APIClient
 
     from utils.Visualizations import (
         plot_cut_age_dataframe,
@@ -17,14 +17,12 @@ if __name__ == "__main__":
         create_age_data_frame,
         cut_age_dataframe,
         create_population_age_labels_sex,
-        create_salary_df
     )
 
     ################################################################################
     #                                WEB VARIABLES                                 #
     web_variables = {
-        "map_image_path": "images/mex_map.jpg",
-        "token": get_token(),
+        "token": get_token("utils/mex_api.txt"),
         "population_age_labels_1": create_population_age_labels_sex(0, 25, 5),
         "population_age_labels_2": create_population_age_labels_sex(25, 50, 5),
         "population_age_labels_3": create_population_age_labels_sex(50, 75, 5),
@@ -45,26 +43,11 @@ if __name__ == "__main__":
         + web_variables["population_age_labels_2"]
         + web_variables["population_age_labels_3"]
     )
-    salary_by_range, salary_dates = client.get_observation("inac/1/2-3/3-5/5+/no/unk/salary_population")
-    salary_df = create_salary_df(salary_by_range, salary_dates)
     ################################################################################
     ################################################################################
     #                                WEB STRUCTURE                                 #
 
     st.title("Mexico population infographic")
-    st.write(
-        "Mexico (Spanish: México), officially the United Mexican States, is a country in the southern portion of North America. "
-        "It is bordered to the north by the United States; to the south and west by the Pacific Ocean; to the southeast by Guatemala"
-        ", Belize, and the Caribbean Sea; and to the east by the Gulf of Mexico."
-    )
-
-    st.image(
-        web_variables["map_image_path"], caption="Map of Mexico", use_column_width=True
-    )
-    st.write(
-        "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."
-    )
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -127,8 +110,6 @@ if __name__ == "__main__":
         )
         st.dataframe(selected_age_data_frame)
         plot_cut_age_dataframe(selected_age_data_frame)
-
-    st.dataframe(salary_df)
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,

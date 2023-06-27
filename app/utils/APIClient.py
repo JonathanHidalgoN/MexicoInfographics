@@ -91,7 +91,7 @@ class APIClient:
         dates = {idx: [] for idx in obs_keys}
         for idx, serie in zip(obs_keys, data["Series"]):
             for obs in serie["OBSERVATIONS"]:
-                try :
+                try:
                     observations[idx].append(float(obs["OBS_VALUE"]))
                 except TypeError:
                     observations[idx].append(None)
@@ -112,5 +112,6 @@ if __name__ == "__main__":
     print(client.urls_info())
     population, date1 = client.get_observation("population")
     male_female_population, date = client.get_observation(
-        "inac/1/2-3/3-5/5+/no/unk/salary_population")
+        "inac/1/2-3/3-5/5+/no/unk/salary_population"
+    )
     pass

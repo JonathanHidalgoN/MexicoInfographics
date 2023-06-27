@@ -104,4 +104,3 @@ def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
         legend_title="Age",
     )
     st.plotly_chart(fig)
-

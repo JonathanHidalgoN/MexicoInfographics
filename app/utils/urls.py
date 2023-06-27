@@ -20,8 +20,8 @@ urls = {
         "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000092,1002000093,1002000095,1002000096,1002000098,1002000099,1002000101,1002000102,1002000104,1002000105/es/0700/false/BISE/2.0/[Aquí va tu Token]?type=json",
         True,
     ),
-    "inac/1/2-3/3-5/5+/no/unk/salary_population" : (
-        "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/6200032077,6200032080,6200032083,6200032086,6200032089,6200032092,6200032095,6200032098/es/0700/false/BISE/2.0/[Aquí va tu Token]?type=json"
-         ,True
+    "inac/1/2-3/3-5/5+/no/unk/salary_population": (
+        "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/6200032077,6200032080,6200032083,6200032086,6200032089,6200032092,6200032095,6200032098/es/0700/false/BISE/2.0/[Aquí va tu Token]?type=json",
+        True,
     ),
 }
