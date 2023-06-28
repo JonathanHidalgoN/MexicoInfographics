@@ -4,7 +4,7 @@ This web app provides intuitive visualizations of Mexico's population informatio
 
 ## Acces the Web App
 
-The web app is up and running and can be accessed at: https://mexico.streamlit.app/
+The web app is up and running and can be accessed at: https://mexicoinfo.streamlit.app/
 
 ## Features
 - Live population data: Get real-time population information for Mexico.
