@@ -1,5 +1,7 @@
 import streamlit as st
 
+st.title("Mexico data explorer")
+
 st.sidebar.success("Select a category.")
 image_path = "images/mex_map.jpg"
 
@@ -9,16 +11,14 @@ st.write(
     ", Belize, and the Caribbean Sea; and to the east by the Gulf of Mexico."
 )
 
-try :
+try:
     st.image(image_path, caption="Map of Mexico", use_column_width=True)
-except FileNotFoundError:
+except:
     st.image(
         st.secrets["map_url"],
         caption="Map of Mexico",
         use_column_width=True,
     )
-
-
 
 st.write(
     "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."
