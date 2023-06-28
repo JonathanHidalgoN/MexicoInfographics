@@ -6,18 +6,19 @@ if __name__ == "__main__":
     from utils.urls import urls
     from utils.APIClient import APIClient
 
-    from utils.Visualizations import (
+    from utils.data_visulizations import (
         plot_cut_age_dataframe,
         make_population_distribution_plot,
         population_counter,
     )
 
-    from utils.DataManipulation import (
-        get_token,
+    from utils.data_manipulation import (
         create_age_data_frame,
         cut_age_dataframe,
         create_population_age_labels_sex,
     )
+
+    from utils.helpers import get_token
 
     ################################################################################
     #                                WEB VARIABLES                                 #

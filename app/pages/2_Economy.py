@@ -2,7 +2,8 @@ import streamlit as st
 from utils.urls import urls
 from utils.APIClient import APIClient
 
-from utils.DataManipulation import get_token, create_salary_df
+from utils.data_manipulation import create_salary_df
+from utils.helpers import get_token
 
 token = get_token("utils/mex_api.txt")
 client = APIClient(token, urls)
