@@ -87,7 +87,7 @@ def make_population_plot(c_APIclient) -> None:
         yaxis=dict(tickfont=dict(color="white")),
     )
 
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
@@ -104,7 +104,7 @@ def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
         yaxis_title="Population",
         legend_title="Age",
     )
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def make_population_distribution_plot(data_frame: DataFrame, year: str) -> None:
@@ -124,4 +124,4 @@ def make_population_distribution_plot(data_frame: DataFrame, year: str) -> None:
         yaxis_title="Population",
     )
 
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)

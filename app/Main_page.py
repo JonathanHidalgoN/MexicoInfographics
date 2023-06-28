@@ -1,5 +1,6 @@
 import streamlit as st
 
+st.set_page_config(layout="wide")
 st.title("Mexico data explorer")
 
 st.sidebar.success("Select a category.")
@@ -12,13 +13,21 @@ st.write(
 )
 
 try:
-    st.image(image_path, caption="Map of Mexico", use_column_width=True)
+    st.image(image_path, caption="Map of Mexico", use_column_width=False)
 except:
     st.image(
         st.secrets["map_url"],
         caption="Map of Mexico",
-        use_column_width=True,
+        use_column_width=False,
     )
+
+st.write(
+    "Mēxihco is the Nahuatl term for the heartland of the Aztec Empire, namely the Valley of Mexico \
+    and surrounding territories, with its people being known as the Mexica.\
+    The name came to apply to the territory controlled by the Aztec Empire, which extended from the Atlantic Ocean to the Pacific Ocean, "
+    "from central Mexico southwards. "
+)
+
 
 st.write(
     "We will use the API of the National Institute of Statistics and Geography (INEGI) to obtain the information displayed in this page."

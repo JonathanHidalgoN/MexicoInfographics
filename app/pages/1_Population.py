@@ -1,7 +1,8 @@
 if __name__ == "__main__":
 
     import streamlit as st
-
+    st.set_page_config(layout="wide")
+    
     from asyncio import run as asyncio_run
     from utils.urls import urls
     from utils.APIClient import APIClient
@@ -48,7 +49,6 @@ if __name__ == "__main__":
     ################################################################################
     ################################################################################
     #                                WEB STRUCTURE                                 #
-
     st.title("Mexico population infographic")
     col1, col2 = st.columns(2)
 

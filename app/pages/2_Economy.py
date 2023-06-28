@@ -1,4 +1,7 @@
 import streamlit as st
+st.set_page_config(layout="wide")
+
+
 from utils.urls import urls
 from utils.APIClient import APIClient
 
