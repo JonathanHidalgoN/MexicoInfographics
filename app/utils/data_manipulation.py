@@ -1,24 +1,4 @@
-import streamlit as st
 from pandas import DataFrame
-
-
-def get_token(path: str = "mex_api.txt") -> str:
-
-    """
-    This function returns the token to make the request to the API.
-
-    Parameters:
-        path (str): The path of the file that contains the token.
-
-    Returns:
-        str: The token.
-    """
-    try:
-        with open(path) as f:
-            token = f.read()
-    except FileNotFoundError:
-        token = st.secrets["mex_api_token"]
-    return token
 
 
 def unfold_population_per_age_request(key: str, api_client, labels: list[str]) -> tuple:
