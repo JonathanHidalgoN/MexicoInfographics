@@ -116,23 +116,6 @@ def cut_age_dataframe(
         return add_age_data_frame(selected_data_frame)
 
 
-def create_population_age_labels_sex(start: int, stop: int, step: int) -> list[str]:
-    """
-    This function creates the labels for the population per age request.
-    Parameters:
-        start (int): The start age.
-        stop (int): The stop age.
-        step (int): The step age.
-    Returns:
-        list[str]: The labels for sthe population per age request.
-    """
-    labels = []
-    for i in range(start, stop, step):
-        labels.append(f"{i}-{i+4} male")
-        labels.append(f"{i}-{i+4} female")
-    return labels
-
-
 def create_salary_df(salary_by_range: dict, dates: dict) -> DataFrame:
     """
     This function creates a dataframe with the salary by range.
@@ -160,3 +143,28 @@ def create_salary_df(salary_by_range: dict, dates: dict) -> DataFrame:
     salary_df.index.name = "Date"
     salary_df.columns = index_names
     return salary_df
+
+
+def create_state_df(states: list[str], values: list = None) -> DataFrame:
+    """
+    This function creates a dataframe with dummy values for each state.
+    Parameters:
+        states (list[str]): The list of states.
+        values (list): The list of values.
+    Returns:
+        state_df (dataframe): The dataframe.
+    """
+    if values is None:
+        MEX_NUM_STATES = 32
+        values = [i for i in range(MEX_NUM_STATES)]
+    state_df = DataFrame({"State": states, "Value": values})
+    return state_df
+
+
+if __name__ == "__main__":
+    from helpers import request_mexico_graph_info, extract_state_names
+
+    mexico_info = request_mexico_graph_info()
+    state_names = extract_state_names(mexico_info)
+    df = create_state_df(state_names)
+    pass

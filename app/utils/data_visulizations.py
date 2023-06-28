@@ -125,3 +125,27 @@ def make_population_distribution_plot(data_frame: DataFrame, year: str) -> None:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+
+def load_mexico_map(mexico_regions: dict, state_df: DataFrame):
+    """
+    This function loads the map of Mexico.
+    A dataframe is used to color the map, color is based on the value column.
+    Parameters:
+        mexico_regions (dict): The dictionary of Mexico regions.
+        state_df (dataframe): The dataframe of the states.
+    Returns:
+        None
+    """
+    fig = px.choropleth(
+        geojson=mexico_regions,
+        locations=state_df["State"],
+        data_frame=state_df,
+        color="Value",
+        color_continuous_scale="Oryel",
+        featureidkey="properties.name",
+    )
+    fig.update_geos(
+        showcountries=False, showcoastlines=False, showland=True, fitbounds="locations"
+    )
+    st.plotly_chart(fig, use_container_width=True)
