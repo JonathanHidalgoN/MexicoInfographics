@@ -1,10 +1,11 @@
 if __name__ == "__main__":
 
     import streamlit as st
+
     st.set_page_config(layout="wide")
-    
+    from pandas import DataFrame
     from asyncio import run as asyncio_run
-    from utils.urls import urls
+    from utils.urls import urls, population_dict
     from utils.APIClient import APIClient
 
     from utils.data_visulizations import (
@@ -12,15 +13,20 @@ if __name__ == "__main__":
         make_population_plot,
         population_counter,
         make_population_distribution_plot,
+        load_mexico_map,
     )
 
     from utils.data_manipulation import (
         create_age_data_frame,
         cut_age_dataframe,
-        create_population_age_labels_sex,
     )
 
-    from utils.helpers import get_token
+    from utils.helpers import (
+        get_token,
+        create_population_age_labels_sex,
+        request_mexico_graph_info,
+        extract_state_names,
+    )
 
     ################################################################################
     #                                WEB VARIABLES                                 #
@@ -46,6 +52,9 @@ if __name__ == "__main__":
         + web_variables["population_age_labels_2"]
         + web_variables["population_age_labels_3"]
     )
+    mexico_info = request_mexico_graph_info()
+    state_names = extract_state_names(mexico_info)
+    state_df = DataFrame(population_dict.items(), columns=["State", "Population"])
     ################################################################################
     ################################################################################
     #                                WEB STRUCTURE                                 #
@@ -140,6 +149,16 @@ if __name__ == "__main__":
             ),
             distribution_year,
         )
+
+    col9, col10 = st.columns([1, 2])
+    with col9:
+        st.dataframe(
+            state_df.sort_values(by=["Population"], ascending=False).reset_index(
+                drop=True
+            )
+        )
+    with col10:
+        load_mexico_map(mexico_info, state_df, "Population")
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
