@@ -8,8 +8,9 @@ if __name__ == "__main__":
 
     from utils.data_visulizations import (
         plot_cut_age_dataframe,
-        make_population_distribution_plot,
+        make_population_plot,
         population_counter,
+        make_population_distribution_plot,
     )
 
     from utils.data_manipulation import (
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         " Mexico is organized as a federal republic comprising 31 states and Mexico City, its capital."
     )
 
-    make_population_distribution_plot(client)
+    make_population_plot(client)
 
     col3, col4 = st.columns(2)
     with col3:
@@ -87,7 +88,9 @@ if __name__ == "__main__":
     with col5:
         st.write("## Population per age")
     with col6:
-        age_population_filter = st.selectbox("Filter", ["None", "Sex"], index=0)
+        age_population_filter = st.selectbox(
+            "Population filter", ["None", "Sex"], index=0
+        )
     # TO DO : Add error handling for the case when the start year is greater than the end year
     if age_population_filter == "Sex":
         selected_age_data_frame = cut_age_dataframe(
@@ -111,6 +114,32 @@ if __name__ == "__main__":
         )
         st.dataframe(selected_age_data_frame)
         plot_cut_age_dataframe(selected_age_data_frame)
+
+    col7, col8 = st.columns(2)
+
+    with col7:
+        distribution_year = st.selectbox(
+            "Year", web_variables["population_age_years"], index=0
+        )
+    with col8:
+        age_distribution_filter = st.selectbox(
+            "Distribution filter", ["None", "Sex"], index=0
+        )
+
+    if age_distribution_filter == "Sex":
+        make_population_distribution_plot(age_male_female_dataframe, distribution_year)
+    else:
+        make_population_distribution_plot(
+            cut_age_dataframe(
+                distribution_year,
+                distribution_year,
+                web_variables["population_age_range"][0],
+                web_variables["population_age_range"][-1],
+                age_male_female_dataframe,
+                filter=age_distribution_filter,
+            ),
+            distribution_year,
+        )
 
     with col2:
         # Async do not work with streamlit, put this in the end of the script,
