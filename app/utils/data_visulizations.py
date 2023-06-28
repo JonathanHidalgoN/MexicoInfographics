@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 from asyncio import sleep
@@ -37,7 +38,7 @@ async def population_counter(
         r = await sleep(children_per_second)
 
 
-def make_population_distribution_plot(c_APIclient) -> None:
+def make_population_plot(c_APIclient) -> None:
     """
     This function makes a plot of the population distribution in Mexico.
     Parameters:
@@ -103,4 +104,24 @@ def plot_cut_age_dataframe(cut_dataframe: DataFrame) -> None:
         yaxis_title="Population",
         legend_title="Age",
     )
+    st.plotly_chart(fig)
+
+
+def make_population_distribution_plot(data_frame: DataFrame, year: str) -> None:
+    """
+    This function plots the population distribution.
+    Parameters:
+        data_frame (dataframe): The dataframe.
+    Returns:
+        None
+    """
+    data = data_frame.loc[str(year)]
+    fig = go.Figure(data=[go.Bar(x=data.index, y=data.values)])
+
+    fig.update_layout(
+        title=f"Population Distribution - {year}",
+        xaxis_title="Age Group",
+        yaxis_title="Population",
+    )
+
     st.plotly_chart(fig)
