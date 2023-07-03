@@ -161,11 +161,46 @@ def create_state_df(states: list[str], values: list = None) -> DataFrame:
     return state_df
 
 
-if __name__ == "__main__":
-    from helpers import request_mexico_graph_info, extract_state_names
+def group_salary_df(salary_df: DataFrame) -> DataFrame:
+    """
+    This function groups the salary dataframe by year.
+    Parameters:
+        salary_df (dataframe): The salary dataframe.
+    Returns:
+        dataframe: The grouped salary dataframe.
+    """
+    copy_df = salary_df.copy()
+    years = [str(year).split("/")[0] for year in salary_df.index.tolist()]
+    years = list(dict.fromkeys(years))
+    for year in years:
+        match = [
+            str(df_year)
+            for df_year in salary_df.index.tolist()
+            if year == df_year.split("/")[0]
+        ]
+        row_values = copy_df.loc[match].sum(axis=0) / len(match)
+        copy_df.loc[year] = row_values
+    return copy_df.loc[years]
 
-    mexico_info = request_mexico_graph_info()
-    state_names = extract_state_names(mexico_info)
-    df = create_state_df(state_names)
-    print(state_names)
-    pass
+
+def filter_salary_df(
+    salary_df: DataFrame,
+    start_year: int,
+    end_year: int,
+    start_salary: str,
+    end_salary: str,
+) -> DataFrame:
+    """
+    This function filters the salary dataframe by the specified years.
+    Parameters:
+        salary_df (dataframe): The salary dataframe.
+        start_year (int): The start year.
+        end_year (int): The end year.
+        filter (str): The filter to apply to the dataframe.
+        start_salary (str): The start salary.
+        end_salary (str): The end salary.
+    Returns:
+        dataframe: The filtered dataframe.
+    """
+    copy_df = salary_df.copy()
+    return copy_df.loc[str(start_year) : str(end_year), start_salary:end_salary]

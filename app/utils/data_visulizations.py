@@ -161,3 +161,21 @@ def load_mexico_map(
             coloraxis_showscale=True,
         )
     st.plotly_chart(fig, use_container_width=True)
+
+
+def make_salary_distribution_plot(salary_df: DataFrame) -> None:
+    """
+    This function plots the salary distribution.
+    Parameters:
+        salary_df (dataframe): The dataframe.
+    Returns:
+        None
+    """
+    fig = px.bar(salary_df, x=salary_df.index, y=salary_df.columns, barmode="group")
+    fig.update_layout(
+        title="Salary Distribution in Mexico",
+        xaxis_title="Date",
+        yaxis_title="Number of People",
+        legend_title="Salary Range",
+    )
+    st.plotly_chart(fig, use_container_width=True)
