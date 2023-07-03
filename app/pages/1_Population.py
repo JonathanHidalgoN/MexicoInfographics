@@ -124,6 +124,16 @@ if __name__ == "__main__":
         st.dataframe(selected_age_data_frame)
         plot_cut_age_dataframe(selected_age_data_frame)
 
+    st.title("Mexico population distribution")
+
+    st.write(
+        "Mexico has a dynamic population that is undergoing a gradual transition from a youthful demographic to an aging one. "
+        "As of 2020, approximately 24.95 percent of Mexico's population fell within the age group of 0 to 14 years, reflecting a significant "
+        "proportion of young individuals. The majority, accounting for around 66.91 percent, belonged to the working-age group of 15 to 64 years, "
+        "indicating a productive segment of the population. Additionally, about 8.13 percent of Mexico's population were 65 years or older, "
+        "signifying the presence of an elderly population."
+    )
+
     col7, col8 = st.columns(2)
 
     with col7:
