@@ -167,4 +167,5 @@ if __name__ == "__main__":
     mexico_info = request_mexico_graph_info()
     state_names = extract_state_names(mexico_info)
     df = create_state_df(state_names)
+    print(state_names)
     pass

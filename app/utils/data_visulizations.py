@@ -128,7 +128,10 @@ def make_population_distribution_plot(data_frame: DataFrame, year: str) -> None:
 
 
 def load_mexico_map(
-    mexico_regions: dict, state_df: DataFrame, target_name: str = "Value"
+    mexico_regions: dict,
+    state_df: DataFrame,
+    target_name: str = "Value",
+    show_values: bool = True,
 ):
     """
     This function loads the map of Mexico.
@@ -137,6 +140,7 @@ def load_mexico_map(
         mexico_regions (dict): The dictionary of Mexico regions.
         state_df (dataframe): The dataframe of the states.
         target_name (str): The name of the target column.
+        show_values (bool): Whether to show the values column on the map. Default is True.
     Returns:
         None
     """
@@ -151,4 +155,9 @@ def load_mexico_map(
     fig.update_geos(
         showcountries=False, showcoastlines=False, showland=True, fitbounds="locations"
     )
+
+    if show_values:
+        fig.update_layout(
+            coloraxis_showscale=True,
+        )
     st.plotly_chart(fig, use_container_width=True)
